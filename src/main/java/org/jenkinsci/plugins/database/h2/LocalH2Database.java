@@ -52,15 +52,19 @@ public class LocalH2Database extends Database {
     public static class DescriptorImpl extends DatabaseDescriptor {
         @Override
         public String getDisplayName() {
-            return "H2 (local)";
+            return "Embedded local database (H2)";
         }
 
         public FormValidation doCheckPath(@QueryParameter String value) {
             Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
+
+            if (value.length()==0)
+                return FormValidation.ok(); // no value entered yet
+
             if (new File(value,"data.h2.db").exists())
-                return FormValidation.ok();
+                return FormValidation.ok("This database already exists.");
             else
-                return FormValidation.warning("This database doesn't exist yet. It will be created.");
+                return FormValidation.ok("This database doesn't exist yet. It will be created.");
         }
     }
 }

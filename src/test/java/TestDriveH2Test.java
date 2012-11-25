@@ -11,11 +11,13 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 /**
+ * Do some silly basic operations with H2
+ *
  * @author Kohsuke Kawaguchi
  */
-public class FooTest {
+public class TestDriveH2Test {
     @Test
-    public void testFoo() throws Exception {
+    public void testDrive() throws Exception {
         File dir = File.createTempFile("h2db", ".test");
         try {
             dir.delete();
