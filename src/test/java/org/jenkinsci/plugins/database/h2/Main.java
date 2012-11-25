@@ -27,12 +27,18 @@ public class Main extends HudsonTestCase {
 
     public void test1() throws Exception {
         SocketConnector connector = new SocketConnector();
-        connector.setPort(8888);
+        connector.setPort(localPort=8888);
         connector.setHeaderBufferSize(12 * 1024); // use a bigger buffer as Stapler traces can get pretty large on deeply nested URL
         server.addConnector(connector);
         connector.start();
 
         interactiveBreak();
+    }
+
+    public static void main(String[] args) {
+        Main m = new Main();
+        m.setName("test1");
+        m.run();
     }
 
     static {
