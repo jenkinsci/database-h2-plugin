@@ -42,7 +42,9 @@ public class LocalH2Database extends Database {
             fac.setDriverClass(Driver.class);
             // because different database in the same folder doesn't share anything, there's no point in confusing
             // the users by asking two things (path+database) when one (path) is suffice.
-            fac.setUrl("jdbc:h2:file:"+path+"/data");
+            // http://www.h2database.com/html/faq.html#database_files
+            String pathU = path.toURI().toString();
+            fac.setUrl("jdbc:h2:" + pathU + (pathU.endsWith("/") ? "" : "/") + "data");
             source = fac.createDataSource();
         }
         return source;
@@ -63,6 +65,8 @@ public class LocalH2Database extends Database {
 
             if (new File(value,"data.h2.db").exists())
                 return FormValidation.ok("This database already exists.");
+            else if (new File(value).isFile())
+                return FormValidation.error("%s is a file; must be a directory.", value);
             else
                 return FormValidation.ok("This database doesn't exist yet. It will be created.");
         }
