@@ -1,12 +1,16 @@
 package org.jenkinsci.plugins.database.h2;
 
 import hudson.Extension;
+import hudson.init.InitMilestone;
+import hudson.init.Initializer;
 import hudson.util.FormValidation;
+import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import org.h2.Driver;
 import org.jenkinsci.plugins.database.BasicDataSource2;
 import org.jenkinsci.plugins.database.Database;
 import org.jenkinsci.plugins.database.DatabaseDescriptor;
+import org.jenkinsci.plugins.database.GlobalDatabaseConfiguration;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -69,6 +73,16 @@ public class LocalH2Database extends Database {
                 return FormValidation.error("%s is a file; must be a directory.", value);
             else
                 return FormValidation.ok("This database doesn't exist yet. It will be created.");
+        }
+    }
+
+    @Initializer(after=InitMilestone.PLUGINS_STARTED)
+    public static void setDefaultGlobalDatabase() {
+        Jenkins j = Jenkins.getInstance();
+        GlobalDatabaseConfiguration gdc = j.getExtensionList(GlobalConfiguration.class).get(GlobalDatabaseConfiguration.class);
+        if (gdc!=null) {// being defensive
+            if (gdc.getDatabase()==null)
+                gdc.setDatabase(new LocalH2Database(new File(j.getRootDir(),"global")));
         }
     }
 }
