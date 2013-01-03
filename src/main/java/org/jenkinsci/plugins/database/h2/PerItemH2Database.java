@@ -14,6 +14,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class PerItemH2Database extends PerItemDatabase  {
     
+    // XXX should also discard entry if ItemListener.onDeleted/Renamed
     private transient Map<TopLevelItem,DataSource> sources;
 
     @DataBoundConstructor public PerItemH2Database() {}
