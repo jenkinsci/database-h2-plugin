@@ -20,19 +20,21 @@ import java.sql.SQLException;
 
 /**
  * Embedded (aka local) H2 database.
- *
+ * <p/>
  * This stores database in a local file.
  *
  * @author Kohsuke Kawaguchi
  */
 public class LocalH2Database extends Database {
     private final File path;
+    private final boolean autoServer;
 
     private transient DataSource source;
 
     @DataBoundConstructor
-    public LocalH2Database(File path) {
+    public LocalH2Database(File path, boolean autoServer) {
         this.path = path;
+        this.autoServer = autoServer;
     }
 
     public File getPath() {
@@ -41,17 +43,25 @@ public class LocalH2Database extends Database {
 
     @Override
     public synchronized DataSource getDataSource() throws SQLException {
-        if (source==null) {
+        if (source == null) {
             BasicDataSource2 fac = new BasicDataSource2();
             fac.setDriverClass(Driver.class);
             // because different database in the same folder doesn't share anything, there's no point in confusing
             // the users by asking two things (path+database) when one (path) is suffice.
             // http://www.h2database.com/html/faq.html#database_files
             String pathU = path.toURI().toString();
-            fac.setUrl("jdbc:h2:" + pathU + (pathU.endsWith("/") ? "" : "/") + "data");
+            String url = "jdbc:h2:" + pathU + (pathU.endsWith("/") ? "" : "/") + "data";
+            if (getAutoServer()) {
+                url += ";AUTO_SERVER=true";
+            }
+            fac.setUrl(url);
             source = fac.createDataSource();
         }
         return source;
+    }
+
+    public boolean getAutoServer() {
+        return this.autoServer;
     }
 
     @Extension
@@ -64,10 +74,10 @@ public class LocalH2Database extends Database {
         public FormValidation doCheckPath(@QueryParameter String value) {
             Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
 
-            if (value.length()==0)
+            if (value.length() == 0)
                 return FormValidation.ok(); // no value entered yet
 
-            if (new File(value,"data.h2.db").exists())
+            if (new File(value, "data.h2.db").exists())
                 return FormValidation.ok("This database already exists.");
             else if (new File(value).isFile())
                 return FormValidation.error("%s is a file; must be a directory.", value);
@@ -76,13 +86,13 @@ public class LocalH2Database extends Database {
         }
     }
 
-    @Initializer(after=InitMilestone.PLUGINS_STARTED)
+    @Initializer(after = InitMilestone.PLUGINS_STARTED)
     public static void setDefaultGlobalDatabase() {
         Jenkins j = Jenkins.getInstance();
         GlobalDatabaseConfiguration gdc = j.getExtensionList(GlobalConfiguration.class).get(GlobalDatabaseConfiguration.class);
-        if (gdc!=null) {// being defensive
-            if (gdc.getDatabase()==null)
-                gdc.setDatabase(new LocalH2Database(new File(j.getRootDir(),"global")));
+        if (gdc != null) {// being defensive
+            if (gdc.getDatabase() == null)
+                gdc.setDatabase(new LocalH2Database(new File(j.getRootDir(), "global"), false));
         }
     }
 }

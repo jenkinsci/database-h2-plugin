@@ -17,7 +17,15 @@ public class PerItemH2Database extends PerItemDatabase  {
     // XXX should also discard entry if ItemListener.onDeleted/Renamed
     private transient Map<TopLevelItem,DataSource> sources;
 
-    @DataBoundConstructor public PerItemH2Database() {}
+    private final boolean autoServer;
+
+    @DataBoundConstructor public PerItemH2Database(boolean autoServer) {
+        this.autoServer = autoServer;
+    }
+
+    public boolean getAutoServer(){
+        return this.autoServer;
+    }
 
     @Override public DataSource getDataSource(TopLevelItem item) throws SQLException {
         if (sources == null) {
@@ -27,7 +35,11 @@ public class PerItemH2Database extends PerItemDatabase  {
         if (source == null) {
             BasicDataSource2 fac = new BasicDataSource2();
             fac.setDriverClass(Driver.class);
-            fac.setUrl("jdbc:h2:" + item.getRootDir().toURI() + "data");
+            String url = "jdbc:h2:" + item.getRootDir().toURI() + "data";
+            if(this.autoServer){
+                url += ";AUTO_SERVER=true";
+            }
+            fac.setUrl(url);
             source = fac.createDataSource();
             sources.put(item, source); // XXX consider closing and discarding after some timeout
         }
