@@ -27,12 +27,14 @@ import java.sql.SQLException;
  */
 public class LocalH2Database extends Database {
     private final File path;
+    private final boolean autoServer;
 
     private transient DataSource source;
 
     @DataBoundConstructor
-    public LocalH2Database(File path) {
+    public LocalH2Database(File path, boolean autoServer) {
         this.path = path;
+        this.autoServer = autoServer;
     }
 
     public File getPath() {
@@ -48,10 +50,21 @@ public class LocalH2Database extends Database {
             // the users by asking two things (path+database) when one (path) is suffice.
             // http://www.h2database.com/html/faq.html#database_files
             String pathU = path.toURI().toString();
-            fac.setUrl("jdbc:h2:" + pathU + (pathU.endsWith("/") ? "" : "/") + "data");
+            fac.setUrl(appendUrlParameters("jdbc:h2:" + pathU + (pathU.endsWith("/") ? "" : "/") + "data"));
             source = fac.createDataSource();
         }
         return source;
+    }
+
+    private String appendUrlParameters(String url) {
+        if (getAutoServer()) {
+            url += ";AUTO_SERVER=true";
+        }
+        return url;
+    }
+
+    public boolean getAutoServer() {
+        return this.autoServer;
     }
 
     @Extension
@@ -82,7 +95,7 @@ public class LocalH2Database extends Database {
         GlobalDatabaseConfiguration gdc = j.getExtensionList(GlobalConfiguration.class).get(GlobalDatabaseConfiguration.class);
         if (gdc!=null) {// being defensive
             if (gdc.getDatabase()==null)
-                gdc.setDatabase(new LocalH2Database(new File(j.getRootDir(),"global")));
+                gdc.setDatabase(new LocalH2Database(new File(j.getRootDir(),"global"), false));
         }
     }
 }
