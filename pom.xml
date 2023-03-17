@@ -22,7 +22,7 @@
     <dependency>
       <groupId>io.jenkins.plugins</groupId>
       <artifactId>h2-api</artifactId>
-      <version>1.4.199</version>
+      <version>10.v8dd81336a_ede</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
