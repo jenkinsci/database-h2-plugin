@@ -15,15 +15,27 @@
   <properties>
     <revision>1.3</revision>
     <changelist>-SNAPSHOT</changelist>
-    <jenkins.version>2.361.4</jenkins.version>
+    <jenkins.version>2.401.3</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
   </properties>
+
+  <dependencyManagement>
+      <dependencies>
+          <dependency>
+              <groupId>io.jenkins.tools.bom</groupId>
+              <artifactId>bom-2.401.x</artifactId>
+              <version>2571.vede9dc5a_2e23</version>
+              <scope>import</scope>
+              <type>pom</type>
+          </dependency>
+      </dependencies>
+  </dependencyManagement>
     
   <dependencies>
     <dependency>
       <groupId>io.jenkins.plugins</groupId>
       <artifactId>h2-api</artifactId>
-      <version>1.4.199</version>
+      <version>11.1.4.199-12.v9f4244395f7a_</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
