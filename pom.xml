@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>database</artifactId>
-      <version>191.vd5981b_97a_5fa_</version>
+      <version>247.v244b_d85f086d</version>
     </dependency>
   </dependencies>
 
