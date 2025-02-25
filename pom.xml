@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.88</version>
+    <version>5.7</version>
     <relativePath />
   </parent>
 
@@ -18,8 +18,8 @@
     <revision>1.4</revision>
     <changelist>999999-SNAPSHOT</changelist>
     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-    <jenkins.baseline>2.401</jenkins.baseline>
-    <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+    <jenkins.baseline>2.479</jenkins.baseline>
+    <jenkins.version>${jenkins.baseline}.1</jenkins.version>
     <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
   </properties>
 
@@ -28,7 +28,7 @@
           <dependency>
               <groupId>io.jenkins.tools.bom</groupId>
               <artifactId>bom-${jenkins.baseline}.x</artifactId>
-              <version>2745.vc7b_fe4c876fa_</version>
+              <version>3893.v213a_42768d35</version>
               <scope>import</scope>
               <type>pom</type>
           </dependency>
@@ -39,12 +39,10 @@
     <dependency>
       <groupId>io.jenkins.plugins</groupId>
       <artifactId>h2-api</artifactId>
-      <version>11.1.4.199-30.v1c64e772f3a_c</version>
     </dependency>
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>database</artifactId>
-      <version>191.vd5981b_97a_5fa_</version>
     </dependency>
   </dependencies>
 
